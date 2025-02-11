@@ -1,0 +1,62 @@
+
+# based on https://gist.github.com/blootsvoets/7859a291436d852929ba3a32e5d18d8a
+services:
+  # Atlas service, running Nginx to serve the Javascript files.
+  atlas:
+    image: ohdsi/atlas
+    environment:
+      WEBAPI_URL: http://localhost:8081/WebAPI/
+      ATLAS_HOSTNAME: localhost:8080
+    ports:
+      - 8080:8080
+
+  # WebAPI service, running Nginx to serve the Javascript files.
+  webapi:
+    image: ohdsi/webapi
+    ports:
+      - 8081:8080
+    volumes:
+      - ./webapiconfig:/var/lib/ohdsi/webapi/WebAPIConfig
+    environment:
+      - JAVA_OPTS=-Xmx4g
+      - CLASSPATH=":/var/lib/ohdsi/webapi/drivers/*"
+      - WEBAPI_URL=http://localhost:8081
+      # Specify Spring settings. Any Spring setting that is set in `pom.xml` or your own
+      # settings.xml can be replaced with a variable in this list. Replace the periods (.) 
+      # in the variable name with underscores (_)
+      - SECURITY_CORS_ENABLED=false
+      - SECURITY_ORIGIN=*
+      - env=webapi-postgresql
+      - datasource_driverClassName=org.postgresql.Driver
+      - datasource_url=jdbc:postgresql://postgres:5432/${POSTGRES_USER}
+      - datasource_ohdsi_schema=ohdsi
+      - datasource_username=${POSTGRES_USER}
+      - datasource_password=${POSTGRES_PASSWORD}
+      - spring_jpa_properties_hibernate_default__schema=ohdsi
+      - spring_jpa_properties_hibernate_dialect=org.hibernate.dialect.PostgreSQLDialect
+      - spring_batch_repository_tableprefix=ohdsi.BATCH_
+      - flyway_datasource_driverClassName=org.postgresql.Driver
+      - flyway_datasource_url=jdbc:postgresql://postgres:5432/${POSTGRES_USER}
+      - flyway_schemas=ohdsi
+      - flyway_placeholders_ohdsiSchema=ohdsi
+      - flyway_datasource_username=${POSTGRES_USER}
+      - flyway_datasource_password=${POSTGRES_PASSWORD}
+      - flyway_locations=classpath:db/migration/postgresql
+  postgres:
+    image: postgres:15
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_ROOT_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_INITDB_ARGS=--lc-collate C --lc-ctype C --encoding UTF8
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: "pg_isready -h localhost -p 5432 -q -U ${POSTGRES_USER}"
+      interval: 3s
+      timeout: 5s
+      retries: 5

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+		This is sample settings.xml file to use with Maven to configure WebAPI. The default location for the
+		settings file is ~/.m2/settings.xml 
+-->
+<settings>
+  <profiles>
+   <profile>
+    <id>webapi-postgresql</id>
+    <properties>
+      <server.port>8080</server.port>
+      <security.provider>DisabledSecurity</security.provider>
+      <security.origin>*</security.origin>
+      <security.ssl.enabled>false</security.ssl.enabled>
+      <security.cors.enabled>false</security.cors.enabled>
+    </properties> 
+  </profile>     
+  </profiles>
+</settings>
