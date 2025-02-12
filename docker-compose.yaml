@@ -16,16 +16,14 @@ services:
     ports:
       - 8081:8080
     volumes:
-      - ./webapiconfig:/var/lib/ohdsi/webapi/WebAPIConfig
+      - ./WebAPIConfig:/var/lib/ohdsi/webapi/WebAPIConfig
     environment:
-      - JAVA_OPTS=-Xmx4g
+      - JAVA_OPTS=-Xmx4g -Dsecurity.cors.enabled=false -Dsecurity.origin=*
       - CLASSPATH=":/var/lib/ohdsi/webapi/drivers/*"
       - WEBAPI_URL=http://localhost:8081
       # Specify Spring settings. Any Spring setting that is set in `pom.xml` or your own
       # settings.xml can be replaced with a variable in this list. Replace the periods (.) 
       # in the variable name with underscores (_)
-      - SECURITY_CORS_ENABLED=false
-      - SECURITY_ORIGIN=*
       - env=webapi-postgresql
       - datasource_driverClassName=org.postgresql.Driver
       - datasource_url=jdbc:postgresql://postgres:5432/${POSTGRES_USER}
@@ -42,6 +40,9 @@ services:
       - flyway_datasource_username=${POSTGRES_USER}
       - flyway_datasource_password=${POSTGRES_PASSWORD}
       - flyway_locations=classpath:db/migration/postgresql
+      - SECURITY_CORS_ENABLED="true"
+      - SECURITY_ORIGIN="*"
+      - security_ssl_enabled="false"
   postgres:
     image: postgres:15
     restart: always
