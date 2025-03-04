@@ -1,26 +1,40 @@
 
 # based on https://gist.github.com/blootsvoets/7859a291436d852929ba3a32e5d18d8a
 services:
+  # Nginx reverse proxy to route requests to Atlas and WebAPI
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8080:80"  # Nginx listens on port 80 internally, exposed as port 8080
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - atlas
+      - webapi
   # Atlas service, running Nginx to serve the Javascript files.
   atlas:
     image: ohdsi/atlas
     environment:
-      WEBAPI_URL: http://localhost:8081/WebAPI/
+      WEBAPI_URL: http://localhost:8080/WebAPI/
       ATLAS_HOSTNAME: localhost:8080
-    ports:
-      - 8080:8080
+    #ports:
+    #  - 8080:8080
+    expose:
+      - 8080
 
   # WebAPI service, running Nginx to serve the Javascript files.
   webapi:
     image: ohdsi/webapi
-    ports:
-      - 8081:8080
-    volumes:
-      - ./WebAPIConfig:/var/lib/ohdsi/webapi/WebAPIConfig
+    #ports:
+    #  - 8081:8080
+    expose:
+      - 8080
+    #volumes:
+    #  - ./WebAPIConfig:/var/lib/ohdsi/webapi/WebAPIConfig
     environment:
       - JAVA_OPTS=-Xmx4g -Dsecurity.cors.enabled=false -Dsecurity.origin=*
       - CLASSPATH=":/var/lib/ohdsi/webapi/drivers/*"
-      - WEBAPI_URL=http://localhost:8081
+      - WEBAPI_URL=http://localhost:8080
       # Specify Spring settings. Any Spring setting that is set in `pom.xml` or your own
       # settings.xml can be replaced with a variable in this list. Replace the periods (.) 
       # in the variable name with underscores (_)
@@ -40,9 +54,10 @@ services:
       - flyway_datasource_username=${POSTGRES_USER}
       - flyway_datasource_password=${POSTGRES_PASSWORD}
       - flyway_locations=classpath:db/migration/postgresql
-      - SECURITY_CORS_ENABLED="true"
+
       - SECURITY_ORIGIN="*"
-      - security_ssl_enabled="false"
+      - SECURITY_CORS_ENABLED=false
+      - SECURITY_SSL_ENABLED=false
   postgres:
     image: postgres:15
     restart: always
@@ -61,3 +76,4 @@ services:
       interval: 3s
       timeout: 5s
       retries: 5
+
