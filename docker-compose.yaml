@@ -21,6 +21,9 @@ services:
     #  - 8080:8080
     expose:
       - 8080
+    depends_on:
+      omop-provision:
+        condition: service_completed_successfully
 
   # WebAPI service, running Nginx to serve the Javascript files.
   webapi:
@@ -58,6 +61,23 @@ services:
       - SECURITY_ORIGIN="*"
       - SECURITY_CORS_ENABLED=false
       - SECURITY_SSL_ENABLED=false
+    depends_on:
+      omop-provision:
+        condition: service_completed_successfully
+  omop-provision:
+    image: dzdde/omop-provisioner
+    environment:
+      LOG_LEVEL: INFO
+      POSTGRESQL_HOST: postgres
+      POSTGRESQL_USER: ${POSTGRES_USER}
+      POSTGRESQL_DATABASE: ${POSTGRES_USER}
+      POSTGRESQL_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRESQL_PORT: 5432
+      VOCABULARY_SOURCE: ${VOCAB_ZIP_URL}
+      LOAD_VOCABULARY: ${LOAD_VOCABULARY}
+    depends_on:
+      postgres:
+        condition: service_healthy
   postgres:
     image: postgres:15
     restart: always
