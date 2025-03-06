@@ -29,7 +29,7 @@ requirements:
 
 Have a look into the `.env` file and adapt it to you needs.
 
-## Start
+## First time start
 
 - Pull the up2date docker images
 
@@ -37,16 +37,34 @@ Have a look into the `.env` file and adapt it to you needs.
 
 - Start the docker compose
 
+`docker compose up`
+
+- **Wait** some time to let the database be provisioned (created and filled with data). you will see some log message from `omop-provision-1 | `. If you load a large Athena Vocabulary on a slow machine, you even wait for more that an hour. But you will always see what happening in the log messages.
+
+- When you see log messages from `atlas-testing-docker-webapi-1 | ` **wait at least one more minute**. The Atlas WebAPI will now deploy its database scheme.
+
+- Exit the compose with `ctrl`+`c`
+
+- Shutdown the compose
+
+`docker compose up`
+
+## Regular start
+
+Your setup is now complete. Your database is ready.
+From now on you can simply start and stop the Atlas Setup as you like.
+
+- Start with
+
 `docker compose up -d`
 
-- Wait for the whole thing started
+- Stop with
 
-You can check what is happening with
+`docker compose down`
+
+If you need to troubleshot something check the logs with:
 
 `docker compose logs -f` (exit this by pressing the keys `ctrl`+`c`)
-
-If you load vocabulary you maybe have to wait substantial time on the first start. up to an hour if you load a large set of vocabulary.
-On next start this is allready done and it will only take 1-2 Minutes for everything to be up.
 
 ## Access Atlas
 
@@ -56,4 +74,4 @@ optional visit http://localhost:8080/WebAPI for inspecting the
 
 # Known issues
 
-- CORS disabled config is not applied by webapi process.
+- CORS disabled config is not applied by webapi process. At the moment this is mitigated by having an nginx as reverse proxy to server webapi and atlas from the same host.

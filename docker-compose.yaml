@@ -32,8 +32,8 @@ services:
     #  - 8081:8080
     expose:
       - 8080
-    #volumes:
-    #  - ./WebAPIConfig:/var/lib/ohdsi/webapi/WebAPIConfig
+    volumes:
+      - ./WebAPIConfig:/var/lib/ohdsi/webapi/WebAPIConfig
     environment:
       - JAVA_OPTS=-Xmx4g -Dsecurity.cors.enabled=false -Dsecurity.origin=*
       - CLASSPATH=":/var/lib/ohdsi/webapi/drivers/*"
@@ -42,11 +42,11 @@ services:
       # settings.xml can be replaced with a variable in this list. Replace the periods (.) 
       # in the variable name with underscores (_)
       - env=webapi-postgresql
-      - datasource_driverClassName=org.postgresql.Driver
-      - datasource_url=jdbc:postgresql://postgres:5432/${POSTGRES_USER}
-      - datasource_ohdsi_schema=ohdsi
-      - datasource_username=${POSTGRES_USER}
-      - datasource_password=${POSTGRES_PASSWORD}
+      - DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver
+      - DATASOURCE_URL=jdbc:postgresql://postgres:5432/${POSTGRES_USER}
+      - DATASOURCE_OHDSI_SCHEMA=ohdsi
+      - DATASOURCE_USERNAME=${POSTGRES_USER}
+      - DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
       - spring_jpa_properties_hibernate_default__schema=ohdsi
       - spring_jpa_properties_hibernate_dialect=org.hibernate.dialect.PostgreSQLDialect
       - spring_batch_repository_tableprefix=ohdsi.BATCH_
@@ -73,8 +73,11 @@ services:
       POSTGRESQL_DATABASE: ${POSTGRES_USER}
       POSTGRESQL_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRESQL_PORT: 5432
+      POSTGRESQL_SCHEMA: ${POSTGRES_USER}
       VOCABULARY_SOURCE: ${VOCAB_ZIP_URL}
       LOAD_VOCABULARY: ${LOAD_VOCABULARY}
+      OHDSI_WEBAPI_REGISTER_DATASOURCE: true
+      OHDSI_WEBAPI_POSTGRESQL_SCHEMA: ohdsi
     depends_on:
       postgres:
         condition: service_healthy
@@ -90,10 +93,9 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_INITDB_ARGS=--lc-collate C --lc-ctype C --encoding UTF8
     volumes:
-      - ./data/postgres:/var/lib/postgresql/data
+      - ./data/postgres/cdm:/var/lib/postgresql/data
     healthcheck:
       test: "pg_isready -h localhost -p 5432 -q -U ${POSTGRES_USER}"
       interval: 3s
       timeout: 5s
       retries: 5
-
