@@ -29,6 +29,8 @@ requirements:
 
 Have a look into the `.env` file and adapt it to you needs.
 
+You maybe want to copy some Athena Vocabulary exports CSVs into the directory `./athena-vocab/`
+
 ## First time start
 
 - Pull the up2date docker images

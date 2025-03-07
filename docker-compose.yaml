@@ -66,6 +66,8 @@ services:
         condition: service_completed_successfully
   omop-provision:
     image: dzdde/omop-provisioner
+    volumes:
+      - ./athena-vocab:/athena-vocab
     environment:
       LOG_LEVEL: INFO
       POSTGRESQL_HOST: postgres
@@ -74,7 +76,7 @@ services:
       POSTGRESQL_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRESQL_PORT: 5432
       POSTGRESQL_SCHEMA: ${POSTGRES_USER}
-      VOCABULARY_SOURCE: ${VOCAB_ZIP_URL}
+      VOCABULARY_SOURCE: ${VOCABULARY_SOURCE}
       LOAD_VOCABULARY: ${LOAD_VOCABULARY}
       OHDSI_WEBAPI_REGISTER_DATASOURCE: true
       OHDSI_WEBAPI_POSTGRESQL_SCHEMA: ohdsi
