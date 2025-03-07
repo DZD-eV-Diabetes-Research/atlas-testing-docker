@@ -39,7 +39,7 @@ Have a look into the `.env` file and adapt it to you needs.
 
 `docker compose up`
 
-- **Wait** some time to let the database be provisioned (created and filled with data). you will see some log message from `omop-provision-1 | `. If you load a large Athena Vocabulary on a slow machine, you even wait for more that an hour. But you will always see what happening in the log messages.
+- **Wait** some time to let the database be provisioned (created and filled with data). you will see some log message from `omop-provision-1 | `. If you load a large Athena Vocabulary on a slow machine, you even wait for more than a hour. But you will always see what happening in the log messages.
 
 - When you see log messages from `atlas-testing-docker-webapi-1 | ` **wait at least one more minute**. The Atlas WebAPI will now deploy its database scheme.
 
@@ -47,7 +47,7 @@ Have a look into the `.env` file and adapt it to you needs.
 
 - Shutdown the compose
 
-`docker compose up`
+`docker compose down`
 
 ## Regular start
 
