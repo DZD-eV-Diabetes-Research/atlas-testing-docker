@@ -17,16 +17,19 @@ requirements:
 
 - Clone this repo
 
-`git clone git@github.com:DZD-eV-Diabetes-Research/atlas-testing-docker.git`
-
+```bash
+git clone git@github.com:DZD-eV-Diabetes-Research/atlas-testing-docker.git
+```
 - Change to the new dir
 
-`cd atlas-testing-docker`
-
+```bash
+cd atlas-testing-docker
+```
 - create a `.env` file
 
-`cp sample.env .env`
-
+```bash
+cp sample.env .env
+```
 Have a look into the `.env` file and adapt it to you needs.
 
 You maybe want to copy some Athena Vocabulary exports CSVs into the directory `./athena-vocab/`
@@ -35,13 +38,15 @@ You maybe want to copy some Athena Vocabulary exports CSVs into the directory `.
 
 - Pull the up2date docker images
 
-`docker compose pull`
-
+```bash
+docker compose pull
+```
 - Start the docker compose
 
-`docker compose up`
-
-- **Wait** some time to let the database be provisioned (created and filled with data). you will see some log message from `omop-provision-1 | `. If you load a large Athena Vocabulary on a slow machine, you even wait for more that an hour. But you will always see what happening in the log messages.
+```bash
+docker compose up
+```
+- **Wait** some time to let the database be provisioned (created and filled with data). you will see some log message from `omop-provision-1 | `. If you load a large Athena Vocabulary on a slow machine, you even wait for more than a hour. But you will always see what happening in the log messages.
 
 - When you see log messages from `atlas-testing-docker-webapi-1 | ` **wait at least one more minute**. The Atlas WebAPI will now deploy its database scheme.
 
@@ -49,8 +54,9 @@ You maybe want to copy some Athena Vocabulary exports CSVs into the directory `.
 
 - Shutdown the compose
 
-`docker compose up`
-
+```bash
+docker compose down
+```
 ## Regular start
 
 Your setup is now complete. Your database is ready.
@@ -58,15 +64,20 @@ From now on you can simply start and stop the Atlas Setup as you like.
 
 - Start with
 
-`docker compose up -d`
-
+```bash
+docker compose up -d
+```
 - Stop with
 
-`docker compose down`
-
+```bash
+docker compose down
+```
 If you need to troubleshot something check the logs with:
 
-`docker compose logs -f` (exit this by pressing the keys `ctrl`+`c`)
+```bash
+docker compose logs -f
+```
+(exit this by pressing the keys `ctrl`+`c`)
 
 ## Access Atlas
 
