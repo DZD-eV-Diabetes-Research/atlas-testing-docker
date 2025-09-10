@@ -47,7 +47,7 @@ services:
       - DATASOURCE_OHDSI_SCHEMA=ohdsi
       - DATASOURCE_USERNAME=${POSTGRES_USER}
       - DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
-      - spring_jpa_properties_hibernate_default_schema=ohdsi
+      - spring_jpa_properties_hibernate_default__schema=ohdsi
       - spring_jpa_properties_hibernate_dialect=org.hibernate.dialect.PostgreSQLDialect
       - spring_batch_repository_tableprefix=ohdsi.BATCH_
       - flyway_datasource_driverClassName=org.postgresql.Driver
